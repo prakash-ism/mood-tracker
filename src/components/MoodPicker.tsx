@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text,StyleSheet,Pressable } from 'react-native';
+import { View, Text,StyleSheet,Pressable, Image } from 'react-native';
 import { MoodOptionType } from '../types';
 import { theme } from '../theme';
 
@@ -15,24 +15,44 @@ type MoodPickerProps = {
   onSelect: (mood : MoodOptionType) => void;
 };
 
+const imageSrc = require('../../assets/butterflies.png');
+
 export const MoodPicker: React.FC<MoodPickerProps> = ({ onSelect }) => {
   const [selectedMood,setSelectedMood] = React.useState<MoodOptionType>();
+  const [hasSelected,setHasSelected] = React.useState(false);
 
   const handleSelect = React.useCallback(() => {
     if(selectedMood){
       onSelect(selectedMood);
       setSelectedMood(undefined);
+      setHasSelected(true);
     }
   }, [onSelect,selectedMood])
+
+  if(hasSelected){
+    return (
+      <View style={styles.container}>
+        <Image source={imageSrc} style={styles.image} />
+        <Pressable
+          style={styles.button}
+          onPress={() => setHasSelected(false)}
+        >
+          <Text style={styles.buttonText}>Choose another!</Text>
+        </Pressable>
+      </View>
+    )
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>How are you right now?</Text>
         <View style={styles.moodOptions}>
           {moodOptions.map((option) => (
-            <View>
+            <View
+            key={option.emoji}
+            >
               <Pressable 
               onPress={() => setSelectedMood(option)}
-              key={option.emoji}
               style= {[styles.moodItem, selectedMood?.emoji === option.emoji ? styles.selectedMoodItem : undefined]}
               >
                 <Text key={option.emoji}>{option.emoji}</Text>
@@ -81,7 +101,8 @@ const styles = StyleSheet.create({
       borderColor : theme.colorPurple,
       margin: 10,
       borderRadius : 10,
-      padding : 20
+      padding : 20,
+      backgroundColor: 'rgba(0,0,0,0.2)'
     },
     heading: {
       fontSize: 20,
@@ -89,6 +110,7 @@ const styles = StyleSheet.create({
       letterSpacing: 1,
       textAlign: 'center',
       marginBottom: 20,
+      color : theme.colorWhite
     },
     button: {
       backgroundColor: theme.colorPurple,
@@ -103,4 +125,7 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       fontWeight: 'bold',
     },
+    image : {
+      alignSelf : 'center'
+    }
 })
