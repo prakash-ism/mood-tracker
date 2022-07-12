@@ -2,6 +2,9 @@ import React from 'react';
 import { View, Text,StyleSheet,Pressable, Image } from 'react-native';
 import { MoodOptionType } from '../types';
 import { theme } from '../theme';
+import Reanimated from 'react-native-reanimated';
+
+const ReanimatedPressable = Reanimated.createAnimatedComponent(Pressable);
 
 const moodOptions : MoodOptionType[] = [
     { emoji: '🧑‍💻', description: 'studious' },
